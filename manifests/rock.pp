@@ -76,20 +76,18 @@ define luarocks::rock(
   }
 
   exec{"manage_rock_${name}":
-      command => $rock_cmd
+      command => $rock_cmd,
+      path => "/bin:/usr/bin",
   }
 
   $rock_cmd_check_str = "luarocks list | egrep -A1 '^${real_name}\\>' | tail -1 | egrep '\\<${rock_version_check_str}\\> \\(installed\\)'"
   if $ensure == 'present' {
       Exec["manage_rock_${name}"]{
          unless => $rock_cmd_check_str,
-         path => "/bin:/usr/bin",
       }
   } else {
       Exec["manage_rock_${name}"]{
          onlyif => $rock_cmd_check_str,
-         path => "/bin:/usr/bin",
       }
   }
 }
-
